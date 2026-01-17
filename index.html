@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0" />
+		<title>Web Calculator</title>
+		<link
+			rel="stylesheet"
+			href="style.css" />
+		<script
+			src="app.js"
+			defer></script>
+	</head>
+
+	<body>
+		<main
+			class="app"
+			aria-label="Calculator application">
+			<header class="topbar">
+				<h1 class="title">Calculator</h1>
+				<!--
+				  Theme toggle button:
+				  - Toggles CSS variables (light/dark)
+				  - aria-label explains action to screen readers
+				-->
+				<button
+					id="themeToggle"
+					class="ghost"
+					type="button"
+					aria-label="Toggle theme">
+					Theme
+				</button>
+			</header>
+			<!--
+			  Layout container:
+			  Holds calculator + history side-by-side on desktop
+			  Stacks vertically on smaller screens via CSS
+				-->
+			<section class="layout">
+				<section
+					class="calculator"
+					aria-label="Calculator">
+										<!--
+					  Calculator display region.
+					  Split into:
+					  - expression (what user types)
+					  - result (final evaluated output)
+					  - error (friendly error messages)
+						-->
+					<div
+						class="screen"
+						role="region"
+						aria-label="Calculator display">
+							<!-- Current expression (editable via keyboard / buttons) -->
+						<div
+							id="expr"
+							class="expr"
+							aria-label="Expression"></div>
+								<!--
+						  Result output:
+						  aria-live announces changes to screen readers
+						  without being disruptive
+						-->
+						<div
+							id="result"
+							class="result"
+							aria-live="polite"
+							aria-label="Result"></div>
+								<!--
+						  Error messages:
+						  role="status" ensures accessibility
+						  Errors never crash the app — only inform the user
+						-->
+						<div
+							id="error"
+							class="error"
+							role="status"
+							aria-live="polite"></div>
+					</div>
+					<!--
+					  Calculator keys:
+					  Each button uses data-key so JS can map
+					  keyboard input and clicks to the same logic
+					-->
+					<div
+						class="keys"
+						role="group"
+						aria-label="Calculator keys">
+							<!-- Utility keys -->
+						<button
+							class="key util"
+							data-key="AC"
+							aria-label="All clear">
+							AC
+						</button>
+						<button
+							class="key util"
+							data-key="Backspace"
+							aria-label="Backspace">
+							⌫
+						</button>
+						<button
+							class="key util"
+							data-key="("
+							aria-label="Left parenthesis">
+							(
+						</button>
+						<button
+							class="key util"
+							data-key=")"
+							aria-label="Right parenthesis">
+							)
+						</button>
+
+						<button
+							class="key"
+							data-key="7">
+							7
+						</button>
+						<button
+							class="key"
+							data-key="8">
+							8
+						</button>
+						<button
+							class="key"
+							data-key="9">
+							9
+						</button>
+						<button
+							class="key op"
+							data-key="/">
+							÷
+						</button>
+
+						<button
+							class="key"
+							data-key="4">
+							4
+						</button>
+						<button
+							class="key"
+							data-key="5">
+							5
+						</button>
+						<button
+							class="key"
+							data-key="6">
+							6
+						</button>
+						<button
+							class="key op"
+							data-key="*">
+							×
+						</button>
+
+						<button
+							class="key"
+							data-key="1">
+							1
+						</button>
+						<button
+							class="key"
+							data-key="2">
+							2
+						</button>
+						<button
+							class="key"
+							data-key="3">
+							3
+						</button>
+						<button
+							class="key op"
+							data-key="-">
+							−
+						</button>
+
+						<button
+							class="key"
+							data-key="0">
+							0
+						</button>
+						<button
+							class="key"
+							data-key=".">
+							.
+						</button>
+						<button
+							class="key op"
+							data-key="+">
+							+
+						</button>
+						<button
+							class="key equals"
+							data-key="Enter"
+							aria-label="Equals">
+							=
+						</button>
+					</div>
+				</section>
+		<!--
+				  History sidebar:
+				  Acts like a mini CMS:
+				  - Stores entries as data
+				  - Renders dynamically
+				  - Allows reuse of past results
+				-->
+				<aside
+					class="history"
+					aria-label="History">
+					<div class="historyTop">
+						<h2>History</h2>
+						<button
+							id="clearHistory"
+							class="ghost"
+							type="button">
+							Clear
+						</button>
+					</div>
+					<ul
+						id="historyList"
+						class="historyList"
+						aria-label="History list"></ul>
+					<p class="hint">
+						Tip: click a history result to reuse it.
+					</p>
+				</aside>
+			</section>
+<!-- Keyboard shortcut hints improve discoverability -->
+			<footer class="footer">
+				<span
+					>Keyboard: Enter = equals, Esc = clear, Backspace
+					= delete</span
+				>
+			</footer>
+		</main>
+	</body>
+</html>

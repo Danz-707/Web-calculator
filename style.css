@@ -1,0 +1,321 @@
+/* =========================================================
+   Global Reset + Layout Baseline
+   Why:
+   - box-sizing: border-box makes width/height calculations predictable
+   - full-height html/body enables vertical centering layouts
+   ========================================================= */
+* {
+	box-sizing: border-box;
+}
+html,
+body {
+	height: 100%;
+}
+body {
+	margin: 0;
+	/* System font stack: fast, native look across OSes (good for web apps) */
+	font-family: system-ui, -apple-system, Segoe UI, Roboto,
+		Arial, sans-serif;
+	background: var(--bg);
+	color: var(--text);
+	display: grid;
+	place-items: center;
+	padding: 24px;
+}
+/* =========================================================
+   Theme Tokens (Design System via CSS Variables)
+   Why:
+   - Centralizes color decisions
+   - Makes theming and future re-skins easy
+   - Encourages consistency (no random hex values scattered everywhere)
+   ========================================================= */
+:root {
+	--bg: #0b0f17;
+	--panel: #111827;
+	--panel2: #0f172a;
+	--text: #e5e7eb;
+	--muted: #9ca3af;
+	--border: rgba(255, 255, 255, 0.08);
+
+	--key: #1f2937;
+	--keyHover: #243246;
+	--keyText: #e5e7eb;
+
+	--op: #334155;
+	--opHover: #3b4b63;
+
+	--equals: #2563eb;
+	--equalsHover: #1d4ed8;
+
+	--danger: #ef4444;
+	--focus: #a78bfa;
+}
+/* =========================================================
+   Light Theme Override
+   Strategy:
+   - We keep the same variable names, only change values
+   - JS toggles: document.documentElement.dataset.theme = "light"
+   ========================================================= */
+:root[data-theme="light"] {
+	--bg: #f3f4f6;
+	--panel: #ffffff;
+	--panel2: #f9fafb;
+	--text: #111827;
+	--muted: #6b7280;
+	--border: rgba(0, 0, 0, 0.08);
+
+	--key: #e5e7eb;
+	--keyHover: #d1d5db;
+	--keyText: #111827;
+
+	--op: #cbd5e1;
+	--opHover: #b6c2d2;
+
+	--equals: #2563eb;
+	--equalsHover: #1d4ed8;
+
+	--danger: #b91c1c;
+	--focus: #7c3aed;
+}
+/* =========================================================
+   App Shell
+   Why:
+   - Constrains max width for readability
+   - Still fluid on smaller screens
+   ========================================================= */
+.app {
+	width: min(1000px, 100%);
+}
+/* =========================================================
+   Top Bar (Title + Theme Toggle)
+   ========================================================= */
+.topbar {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 14px;
+}
+
+.title {
+	font-size: 18px;
+	margin: 0;
+	color: var(--text);
+}
+/* "Ghost" button style:
+   - Transparent by default (secondary action)
+   - Border gives affordance without being heavy */
+.ghost {
+	background: transparent;
+	border: 1px solid var(--border);
+	color: var(--text);
+	padding: 8px 10px;
+	border-radius: 10px;
+	cursor: pointer;
+}
+/* Hover uses a subtle overlay; different overlay per theme for contrast */
+.ghost:hover {
+	background: rgba(255, 255, 255, 0.04);
+}
+:root[data-theme="light"] .ghost:hover {
+	background: rgba(0, 0, 0, 0.04);
+}
+/* =========================================================
+   Main Layout
+   Mobile-first:
+   - One column by default (calculator above history)
+   - Two columns on wide screens via media query
+   ========================================================= */
+.layout {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 14px;
+}
+/* Shared panel styling:
+   - calculator and history share surface rules for consistency */
+.calculator,
+.history {
+	background: var(--panel);
+	border: 1px solid var(--border);
+	border-radius: 16px;
+	overflow: hidden;
+}
+/* =========================================================
+   Screen / Display Area
+   ========================================================= */
+.screen {
+	background: var(--panel2);
+	padding: 16px;
+	border-bottom: 1px solid var(--border);
+}
+/* Expression line:
+   - muted because it’s "context"
+   - tabular numbers prevent digit width shifts (less jank)
+   - nowrap + overflow-x for long expressions */
+.expr {
+	min-height: 28px;
+	color: var(--muted);
+	font-size: 14px;
+	overflow-x: auto;
+	white-space: nowrap;
+	font-variant-numeric: tabular-nums;
+}
+/* Result line:
+   - larger and bold because it’s the primary output
+   - same overflow strategy for long results */
+.result {
+	min-height: 44px;
+	font-size: 28px;
+	font-weight: 700;
+	overflow-x: auto;
+	white-space: nowrap;
+	font-variant-numeric: tabular-nums;
+}
+/* Error line:
+   - reserved height avoids layout shifting when errors appear/disappear */
+.error {
+	min-height: 20px;
+	margin-top: 6px;
+	color: var(--danger);
+	font-size: 13px;
+}
+/* =========================================================
+   Keypad
+   Grid layout:
+   - 4 columns (classic calculator)
+   - gap + padding for finger comfort on mobile
+   ========================================================= */
+.keys {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 10px;
+	padding: 14px;
+}
+/* Base key style:
+   - consistent sizing/shape
+   - hover/active provide feedback
+   - font-weight slightly heavy for readability */
+.key {
+	border: 1px solid var(--border);
+	background: var(--key);
+	color: var(--keyText);
+	padding: 16px 12px;
+	border-radius: 14px;
+	cursor: pointer;
+	font-size: 16px;
+	font-weight: 650;
+}
+
+.key:hover {
+	background: var(--keyHover);
+}
+.key:active {
+	transform: translateY(1px);
+}
+
+.key.op {
+	background: var(--op);
+}
+.key.op:hover {
+	background: var(--opHover);
+}
+
+.key.equals {
+	background: var(--equals);
+	color: white;
+}
+.key.equals:hover {
+	background: var(--equalsHover);
+}
+
+.key.util {
+	color: var(--muted);
+}
+/* =========================================================
+   Accessibility: Focus Visible
+   Why:
+   - Keyboard users need to see where focus is
+   - :focus-visible avoids showing rings on mouse clicks
+   ========================================================= */
+.key:focus-visible,
+.ghost:focus-visible {
+	outline: 3px solid var(--focus);
+	outline-offset: 2px;
+}
+/* =========================================================
+   History Panel
+   ========================================================= */
+.historyTop {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 12px 14px;
+	border-bottom: 1px solid var(--border);
+}
+
+.historyTop h2 {
+	margin: 0;
+	font-size: 14px;
+	color: var(--text);
+}
+/* Scroll container:
+   max-height prevents history from stretching the page too tall */
+.historyList {
+	list-style: none;
+	margin: 0;
+	padding: 10px 10px 4px;
+	max-height: 280px;
+	overflow: auto;
+}
+/* Each history entry is clickable (reusable results) */
+.historyItem {
+	border: 1px solid var(--border);
+	border-radius: 12px;
+	padding: 10px;
+	margin-bottom: 10px;
+	background: rgba(255, 255, 255, 0.02);
+	cursor: pointer;
+}
+:root[data-theme="light"] .historyItem {
+	background: rgba(0, 0, 0, 0.02);
+}
+
+.historyExpr {
+	color: var(--muted);
+	font-size: 12px;
+	overflow-x: auto;
+	white-space: nowrap;
+}
+
+.historyRes {
+	margin-top: 6px;
+	font-weight: 700;
+	font-variant-numeric: tabular-nums;
+}
+
+.hint {
+	margin: 0;
+	padding: 10px 14px 14px;
+	color: var(--muted);
+	font-size: 12px;
+}
+/* =========================================================
+   Footer
+   ========================================================= */
+.footer {
+	margin-top: 12px;
+	color: var(--muted);
+	font-size: 12px;
+	text-align: center;
+}
+/* =========================================================
+   Responsive Breakpoint
+   Why 900px:
+   - Gives room for a readable sidebar (history) without squishing keypad
+   - Desktop gets a 2-column layout; mobile stays stacked
+   ========================================================= */
+@media (min-width: 900px) {
+	.layout {
+		grid-template-columns: 1fr 320px;
+		align-items: start;
+	}
+}
